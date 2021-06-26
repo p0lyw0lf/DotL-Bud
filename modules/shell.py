@@ -9,6 +9,7 @@ class Shell:
         self.special_begin = 'b!'
         self.tokenizing_regex = re.compile("([^\s\"']+|\"([^\"]*)\"|'([^']*)')")
         self.commands = dict()
+        self.dm_allowed_commands = set()
         self.databases = []
 
         self.force_words = {"force", "-f", "--force", "justdoit"}

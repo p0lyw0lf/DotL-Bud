@@ -12,6 +12,9 @@ class HelpCommands(Shell):
             "help":
                 {"args": ["user", "channel", "*str"], "func": self.get_help}
         })
+        self.dm_allowed_commands.update({
+            "help"
+        })
 
     async def get_help(self, user, channel, path=None):
         if path is None:

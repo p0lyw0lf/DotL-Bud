@@ -31,19 +31,19 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
         mention_index = 0
         for index in range(len(self.commands[command]["args"])):
             arg = self.commands[command]['args'][index]
-            
+
             if arg == "user":
                 args.append(user)
 
             elif arg == "message":
                 args.append(message)
-                
+
             elif arg == "server":
                 args.append(server)
-                
+
             elif arg == "channel":
                 args.append(channel)
-                
+
             elif arg == "mention":
                 if mention_index < len(message.mentions):
                     args.append(message.mentions[mention_index].id)
@@ -53,9 +53,9 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
 
             elif arg == '*mentions':
                 args.append([p.id for p in message.mentions])
-                
+
             elif len(tokens) != 0:
-                
+
                 if arg == 'force?':
                     args.append(self.autocomplete(tokens.pop().lower(), self.force_words))
                 elif arg == 'no?':
@@ -67,13 +67,13 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
                 elif arg == '*str':
                     args.append([tokens.pop().lower() for x in
                                     range(len(tokens) - (len(self.commands[command]['args']) - index - 1))])
-                
+
                 elif arg == 'int':
                     args.append(safe_int(tokens.pop()))
                 elif arg == 'float':
                     args.append(safe_float(tokens.pop()))
-                
-                    
+
+
         return args
 
     async def wait_then_delete(self, message, user):
@@ -86,20 +86,20 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
 
     async def parse(self, message_obj):
         try:
-            
+
             message = message_obj.content.split('\n')[0]
             server = message_obj.guild
             channel = message_obj.channel
             user = message_obj.author
-            
+
             if message.startswith(self.special_begin) or \
                (channel.type == discord.ChannelType.private and user.id != self.client.user.id):
 
                 command, tokens = self.full_tokenize(message)
-                
+
                 if command in self.commands:
                     if self.can_run_command(user, server, command):
-                    
+
                         args = self.get_args(command, tokens, message_obj, user, server, channel)
                         output = await self.commands[command]["func"](*args)
 

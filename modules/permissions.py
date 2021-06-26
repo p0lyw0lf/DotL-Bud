@@ -30,18 +30,20 @@ class Permissions(Shell):
         else:
             return "It dosen't make sense to restrict commands in PMs!"
 
-        
+
 
     async def set_admin_role(self, server, admin_role_id=None):
         if admin_role_id is None: return "You need to specify a role id."
-        
+
         prev_role_id = self.permdb[str(server.id), 'admin_role']
         self.permdb[str(server.id), 'admin_role'] = str(admin_role_id)
 
         return "Changed admin role from {} to {}".format(prev_role_id, admin_role_id)
 
     def can_run_command(self, user, server, command):
-        if server is None: return True
+        if server is None:
+            return command in self.dm_allowed_commands
+
         admin_role_id = self.permdb[str(server.id), 'admin_role']
         # Are we not in a place with admin restrictions?
         if not admin_role_id or \
