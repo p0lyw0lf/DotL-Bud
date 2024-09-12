@@ -59,6 +59,20 @@ bot.schedule_periodic(
     'meg_rss'
 )
 
+# Meg bluesky
+bot.schedule_periodic(
+    bot.check_rss,
+    (
+        "https://bsky.app/profile/did:plc:fq7uo4jk4mu5wf3c2zni2rwk/rss",
+        371963443873447947,
+        "Hey everyone! Meg just posted to bluesky: %page%\n> %description%",
+        "meg_bsky"
+    ),
+    {},
+    10 * 60, # 10 min
+    'meg_bsky_rss'
+)
+
 bot.schedule_periodic(
     bot.check_rss,
     (
