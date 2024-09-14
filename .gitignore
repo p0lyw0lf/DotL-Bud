@@ -30,9 +30,5 @@ venv/
 oauth2.tok
 oauth2.tok.*
 
-# Permissions
-perms/
-
-# History files
+# RSS history files
 db/last_link_*
-db/memes_*
