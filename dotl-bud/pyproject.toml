@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dotl-bud"
+dynamic = ["version"]
+requires-python = ">=3.8"
+license = "MIT"
+dependencies = [
+  "discord.py",
+  "feedparser",
+]
+
+[tool.hatch.version]
+path = "src/dotl_bud/__about__.py"

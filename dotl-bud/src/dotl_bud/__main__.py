@@ -1,11 +1,12 @@
+import asyncio
 import datetime
-import traceback
 import logging as log
+import os
+import traceback
 
-import discord
 from discord import Forbidden, Intents
 from discord.errors import NotFound
-import asyncio
+import discord
 
 from command_parser import Parser
 from command_scheduler import Scheduler
@@ -128,10 +129,10 @@ async def on_ready():
     log.info(client.user.name)
     log.info(client.user.id)
     log.info('------')
-    await bot.start_task('dotl_rss')
-    await bot.start_task('meg_rss')
-    await bot.start_task('meg_bsky_rss')
-    await bot.start_task('yoko_rss')
+    # await bot.start_task('dotl_rss')
+    # await bot.start_task('meg_rss')
+    # await bot.start_task('meg_bsky_rss')
+    # await bot.start_task('yoko_rss')
     await bot.start_task('delete_previous_pins')
     await bot.start_task('commit_dbs')
     await bot.start_task('check_roles')
@@ -216,7 +217,7 @@ async def on_message(message):
                     bot.wait_then_delete(rspmsg, message.author))
 
 if __name__ == "__main__":
-    file = open('oauth2.tok')
+    file = open(os.environ.get("OAUTH_TOKEN_FILE", "oauth2.tok"))
     tok = file.read()
     file.close()
     log.info("Starting...")
