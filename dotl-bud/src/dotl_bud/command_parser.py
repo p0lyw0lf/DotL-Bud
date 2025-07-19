@@ -13,6 +13,7 @@ from modules.memes import MemeCommands
 from modules.role_manager import RoleManager
 from utils import safe_int, safe_float
 
+
 class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager):
     # I'm hoping to do NLP someday, but idk what I need to do
     # in order to make compatibility for it...
@@ -20,9 +21,10 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
         super(Parser, self).__init__(client, *args, **kwargs)
 
     def full_tokenize(self, message):
-        message = message[len(self.special_begin):] if message.startswith(self.special_begin) else message
+        message = message[len(self.special_begin):] if message.startswith(
+            self.special_begin) else message
         tokens = self.tokenize(message)
-        command = tokens[0] #self.autocomplete(tokens[0], self.commands)
+        command = tokens[0]  # self.autocomplete(tokens[0], self.commands)
         tokens = tokens[1:][::-1]
         return command, tokens
 
@@ -57,22 +59,24 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
             elif len(tokens) != 0:
 
                 if arg == 'force?':
-                    args.append(self.autocomplete(tokens.pop().lower(), self.force_words))
+                    args.append(self.autocomplete(
+                        tokens.pop().lower(), self.force_words))
                 elif arg == 'no?':
-                    args.append(self.autocomplete(tokens.pop().lower(), self.no_words))
+                    args.append(self.autocomplete(
+                        tokens.pop().lower(), self.no_words))
                 elif arg == 'yes?':
-                    args.append(self.autocomplete(tokens.pop().lower(), self.yes_words))
+                    args.append(self.autocomplete(
+                        tokens.pop().lower(), self.yes_words))
                 elif arg == 'str':
                     args.append(tokens.pop())
                 elif arg == '*str':
                     args.append([tokens.pop().lower() for x in
-                                    range(len(tokens) - (len(self.commands[command]['args']) - index - 1))])
+                                 range(len(tokens) - (len(self.commands[command]['args']) - index - 1))])
 
                 elif arg == 'int':
                     args.append(safe_int(tokens.pop()))
                 elif arg == 'float':
                     args.append(safe_float(tokens.pop()))
-
 
         return args
 
@@ -100,7 +104,8 @@ class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager
                 if command in self.commands:
                     if self.can_run_command(user, server, command):
 
-                        args = self.get_args(command, tokens, message_obj, user, server, channel)
+                        args = self.get_args(
+                            command, tokens, message_obj, user, server, channel)
                         output = await self.commands[command]["func"](*args)
 
                         return command, output

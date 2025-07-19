@@ -41,12 +41,11 @@ class RoleManager(Permissions):
             },
         })
 
-
     async def check_roles(self, serverid, member_timelimit, unmuted_timelimit):
         if self.permdb[str(serverid), 'member_role'] is None or \
-            self.permdb[str(serverid), 'muted_role'] is None:
+                self.permdb[str(serverid), 'muted_role'] is None:
             log.warn("You must set the member and role ids on {} before auto-roleing can work!"
-                .format(serverid))
+                     .format(serverid))
             return
 
         curtime = datetime.datetime.utcnow()
@@ -57,21 +56,24 @@ class RoleManager(Permissions):
             # which can be very slow
             await server.chunk()
 
-        member_role = discord.utils.get(server.roles, id=int(self.permdb[str(serverid), 'member_role']))
-        muted_role = discord.utils.get(server.roles, id=int(self.permdb[str(serverid), 'muted_role']))
+        member_role = discord.utils.get(server.roles, id=int(
+            self.permdb[str(serverid), 'member_role']))
+        muted_role = discord.utils.get(server.roles, id=int(
+            self.permdb[str(serverid), 'muted_role']))
 
         # removing this func for now
-        #if previous_roleid is None:
+        # if previous_roleid is None:
         #    previous_role = server.default_role
-        #else:
+        # else:
         #    previous_role = discord.utils.get(server.roles, id=previous_roleid)
         previous_role = server.default_role
-        
+
         for member in server.members:
             # Promote members to the Buds role, but only if they're not on probation
             warnings = self.get_warnings(member.id, False)
             if warnings["probation"]:
-                probation_start = datetime.datetime.strptime(warnings["since"], "%Y-%m-%dT%H:%M:%S.%f")
+                probation_start = datetime.datetime.strptime(
+                    warnings["since"], "%Y-%m-%dT%H:%M:%S.%f")
                 if probation_start + member_timelimit < curtime:
                     # Probation is up, add them back to Bud status
                     log.warn("removing probation")
@@ -80,19 +82,22 @@ class RoleManager(Permissions):
                     warnings["probation"] = False
                     log.info(str(member))
                     self.warnings[member.id] = warnings
-                
+
                 if probation_start + unmuted_timelimit < curtime:
                     # Unmute them
                     await self.client.remove_roles(member, muted_role)
-                
+
             elif member.joined_at + member_timelimit < curtime:
-                if previous_role in member.roles and member_role not in member.roles:    
-                    log.debug(str(member)+": "+str(member.joined_at)+" | "+str(curtime)+" | "+str(member.joined_at+member_timelimit))
+                if previous_role in member.roles and member_role not in member.roles:
+                    log.debug(str(member)+": "+str(member.joined_at)+" | " +
+                              str(curtime)+" | "+str(member.joined_at+member_timelimit))
                     try:
                         await member.add_roles(member_role)
-                        log.info("[SUCCESS] Changing role of "+str(member)+" succeeded")
+                        log.info("[SUCCESS] Changing role of " +
+                                 str(member)+" succeeded")
                     except (Forbidden, HTTPException) as e:
-                        log.info("[FAILURE] Changing role of "+str(member)+" failed")
+                        log.info("[FAILURE] Changing role of " +
+                                 str(member)+" failed")
 
     async def warn_user(self, server, userid=None, username=None):
         """
@@ -103,20 +108,21 @@ class RoleManager(Permissions):
         :param username: (str) the name of the user to warn
         """
         try:
-            member = self.get_server_user(server, userid, username, "You didn't specify a member to warn")
-            
+            member = self.get_server_user(
+                server, userid, username, "You didn't specify a member to warn")
+
             # increment the warning count
             warnings = self.get_warnings(member.id)
             warnings["warnings"] += 1
 
             # send a PM to the user that they've been warned
             member_pm = ("You have been issued a warning. You have {} warnings. Play nice or else."
-                    .format(warnings["warnings"]))
+                         .format(warnings["warnings"]))
             await member.send(member_pm)
 
             # report back to the caller how many warnings this person has
             response = ("User {} has been warned and now has {} warnings."
-                    .format(self.user_format(member), warnings["warnings"]))
+                        .format(self.user_format(member), warnings["warnings"]))
             return response
 
         except Exception as e:
@@ -131,13 +137,15 @@ class RoleManager(Permissions):
         :param username: (str) the name of the user to unwarn
         """
         try:
-            member = self.get_server_user(server, userid, username, "You didn't specify a user to unwarn")
+            member = self.get_server_user(
+                server, userid, username, "You didn't specify a user to unwarn")
             # decrement the warning count
             warnings = self.get_warnings(member.id)
             warnings["warnings"] = max(0, warnings["warnings"]-1)
 
             # report back to the caller how many warnings this person has
-            response = "User {} has {} warnings.".format(self.user_format(member), warnings["warnings"])
+            response = "User {} has {} warnings.".format(
+                self.user_format(member), warnings["warnings"])
             return response
 
         except Exception as e:
@@ -157,21 +165,25 @@ class RoleManager(Permissions):
             if userid is None and username is None:
                 member = caller
             else:
-                member = self.get_server_user(server, userid, username, "You didn't specify a user to check")
+                member = self.get_server_user(
+                    server, userid, username, "You didn't specify a user to check")
             # Determine how many warnings the user has and if they're on probation
             warnings = self.get_warnings(member.id, False)
             if warnings["warnings"] == 0:
-                response = "User {} has no warnings.".format(self.user_format(member))
+                response = "User {} has no warnings.".format(
+                    self.user_format(member))
                 return response
 
             # report back to the caller how many warnings this person has
             else:
-                response = "User {} has {} warnings.".format(self.user_format(member), warnings["warnings"])
+                response = "User {} has {} warnings.".format(
+                    self.user_format(member), warnings["warnings"])
                 if warnings["probation"]:
                     # Parse the "since" field and convert to a nice, readable time
                     formatted_time = (datetime.datetime.strptime(warnings["since"], "%Y-%m-%dT%H:%M:%S.%f")
-                            .strftime("%I:%M %p on %b %d, %Y"))
-                    response += " They have been on probation since {}.".format(formatted_time)
+                                      .strftime("%I:%M %p on %b %d, %Y"))
+                    response += " They have been on probation since {}.".format(
+                        formatted_time)
                 return response
 
         except Exception as e:
@@ -188,47 +200,54 @@ class RoleManager(Permissions):
         :param username: (str) the name of the user to probate
         """
         try:
-            
-            member = self.get_server_user(server, userid, username, "You didn't specify a member to put on probation")
+
+            member = self.get_server_user(
+                server, userid, username, "You didn't specify a member to put on probation")
 
             # Add them to the list of users on probation.
             # Do this BEFORE removing their bud role in case check_roles runs between when
             # we remove their role and when we put them on probation.
             warnings = self.get_warnings(member.id)
-            if warnings["warnings"] == 0: warnings["warnings"] = 1
+            if warnings["warnings"] == 0:
+                warnings["warnings"] = 1
             warnings["probation"] = True
-            warnings["since"] = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
+            warnings["since"] = datetime.datetime.utcnow().strftime(
+                "%Y-%m-%dT%H:%M:%S.%f")
             self.warnings[member.id] = warnings
 
             # Remove the user's "Buds" role.
-            buds_role = discord.utils.get(server.roles, id=int(self.permdb[str(server.id), 'member_role']))
+            buds_role = discord.utils.get(server.roles, id=int(
+                self.permdb[str(server.id), 'member_role']))
             await member.remove_roles(buds_role)
 
             # Prevent them from posting for 24 hours.
-            muted_role = discord.utils.get(server.roles, id=int(self.permdb[str(server.id), 'muted_role']))
+            muted_role = discord.utils.get(server.roles, id=int(
+                self.permdb[str(server.id), 'muted_role']))
             await member.add_roles(muted_role)
 
             # Notify the caller that the user has been put on probation
-            response = "User {} is now on probation.".format(self.user_format(member))
+            response = "User {} is now on probation.".format(
+                self.user_format(member))
             return response
 
         except Exception as e:
             return str(e)
-            
+
     async def set_member_role(self, server, member_role_id=None):
-        if member_role_id is None: return "You need to specify a role id."
+        if member_role_id is None:
+            return "You need to specify a role id."
 
         self.permdb[str(server.id), 'member_role'] = str(member_role_id)
 
         return "Set role {} as the member role".format(member_role_id)
-        
+
     async def set_muted_role(self, server, muted_role_id=None):
-        if muted_role_id is None: return "You need to specify a role id."
+        if muted_role_id is None:
+            return "You need to specify a role id."
 
         self.permdb[str(server.id), 'muted_role'] = str(muted_role_id)
 
         return "Set role {} as the muted role".format(muted_role_id)
-
 
     def user_format(self, member):
         return "{}#{}".format(member.name, member.discriminator)

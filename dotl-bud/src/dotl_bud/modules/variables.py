@@ -13,7 +13,6 @@ class VariableCommands(Shell):
             "get":
                 {"args": ["user", "*str"], "func": self.get_user_data}
         })
-                         
 
     async def set_user_data(self, user, variable, value):
         print(variable, value)

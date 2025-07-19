@@ -3,6 +3,7 @@ import threading
 import json
 import logging as log
 
+
 class Database(object):
     def __init__(self, filename, global_keyword):
         self.file_dir = str(filename) + '/'
@@ -55,6 +56,7 @@ class Database(object):
         filename = os.path.join(self.file_dir, *key)
         os.rmdir(filename)
 
+
 class InMemDatabase(Database):
     def __init__(self, *args, **kwargs):
         super(InMemDatabase, self).__init__(*args, **kwargs)
@@ -96,6 +98,7 @@ class InMemDatabase(Database):
         for path in self.dct:
             super().__setitem__(path, self.dct[path])
 
+
 class JsonDatabase(Database):
     def __init__(self, filename):
         self.filename = filename
@@ -125,5 +128,6 @@ class JsonDatabase(Database):
         with open(self.filename, 'w') as fd:
             json.dump(self._data, fd)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     d = Database('.')

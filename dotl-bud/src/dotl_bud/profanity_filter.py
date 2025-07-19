@@ -3,6 +3,7 @@ import re
 
 from .filter import BAD_WORD_LIST, BAD_WORD_REPLACE
 
+
 class ProfanityFilter:
     letter2regex = {
         'a': "[aA@]",
@@ -32,8 +33,9 @@ class ProfanityFilter:
         'y': "[yY]",
         'z': "[zZ2]"
     }
+
     def __init__(self, client, *args, **kwargs):
-        #super(ProfanityFilter, self).__init__(client, *args, **kwargs)
+        # super(ProfanityFilter, self).__init__(client, *args, **kwargs)
         self.reset_filter()
 
     def reset_filter(self):
@@ -54,7 +56,7 @@ class ProfanityFilter:
                 ))  # Use "\\s*" to detect spaces in between letters as well
                 self.regex_string += ")|"
 
-        self.regex_string = self.regex_string[:-1] +")\\b"
+        self.regex_string = self.regex_string[:-1] + ")\\b"
         self.regex = re.compile(self.regex_string)
 
     def random_replace(self, *args):

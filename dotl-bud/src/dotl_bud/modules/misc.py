@@ -7,22 +7,24 @@ from discord import ChannelType
 from ..filter import BAD_WORD_LIST
 from .shell import Shell
 
+
 class MiscCommands(Shell):
     def __init__(self, client, *args, **kwargs):
         super(MiscCommands, self).__init__(client, *args, **kwargs)
-        
+
         self.commands.update({
             "channel_info":
-                {"args": ["message", "channel"], "func": self.get_channel_info},
+                {"args": ["message", "channel"],
+                    "func": self.get_channel_info},
             "my_roles":
                 {"args": ["server", "user"], "func": self.get_roles},
-            "commit_dbs": 
-                {"args": [], "func": self.commit_dbs_command}, 
+            "commit_dbs":
+                {"args": [], "func": self.commit_dbs_command},
             "filter_word":
                 {"args": ["str"], "func": self.filter_word},
             "unfilter_word":
                 {"args": ["str"], "func": self.unfilter_word},
-            #"get_server_info":
+            # "get_server_info":
             #    {"args": ["server"], "func": self.get_server_info}
         })
         self.commands.update({
@@ -34,38 +36,42 @@ class MiscCommands(Shell):
         if channel.type != ChannelType.private:
             out = dict()
             for mention in message.channel_mentions:
-                out[mention.name] = "ID: {}\nTopic: {}".format(mention.id, mention.topic)
+                out[mention.name] = "ID: {}\nTopic: {}".format(
+                    mention.id, mention.topic)
             if not message.channel_mentions:
-                out[channel.name] = "ID: {}\nTopic: {}".format(channel.id, channel.topic)
+                out[channel.name] = "ID: {}\nTopic: {}".format(
+                    channel.id, channel.topic)
             return out
         else:
             return None
 
     async def get_roles(self, server, user, *args):
         out = dict()
-        if isinstance(user, discord.Member): # PMs different from servers
+        if isinstance(user, discord.Member):  # PMs different from servers
             for role in user.roles:
                 out[role.name] = "ID: {}".format(role.id)
         if out:
             return out
         else:
             return "You have no roles"
-    
+
     async def commit_dbs_command(self, *args):
         await self.commit_dbs()
         return "Short-term memory put into long-term!"
 
     async def filter_word(self, word=None, *args):
-        if word is None: return "You need to specify a word!"
+        if word is None:
+            return "You need to specify a word!"
         # What I'm doing here probably isn't good for million-line files,
         # but should be good enough for the small list here
         filter_file = open(BAD_WORD_LIST, 'r')
 
         filter_list = [x for x in filter_file.read().split("\n") if x]
         filter_file.close()
-        
+
         word = word.lower()
-        if word in filter_list: return "That word is already in the list"
+        if word in filter_list:
+            return "That word is already in the list"
 
         filter_file = open(BAD_WORD_LIST, 'a')
         filter_file.write("\n" + word)
@@ -86,7 +92,8 @@ class MiscCommands(Shell):
     # SUPER LATE EDIT: lol this was added back a while ago, just saw this
     # comment as I was refactoring the code for the discord.py 1.0 release
     async def unfilter_word(self, word=None, *args):
-        if word is None: return "You need to specify a word!"
+        if word is None:
+            return "You need to specify a word!"
 
         filter_file = open(BAD_WORD_LIST, 'r')
 
@@ -94,7 +101,8 @@ class MiscCommands(Shell):
         filter_file.close()
 
         word = word.lower()
-        if word not in filter_list: return "That word is not on the list"
+        if word not in filter_list:
+            return "That word is not on the list"
 
         filter_file = open(BAD_WORD_LIST, "w")
 

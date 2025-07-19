@@ -1,13 +1,15 @@
 import re
 from discord import Embed
 
+
 class Shell:
     def __init__(self, client, *args, **kwargs):
         super(Shell, self).__init__(self, client, *args, **kwargs)
-        self.admins = {172823011999744001,}
+        self.admins = {172823011999744001, }
 
         self.special_begin = 'b!'
-        self.tokenizing_regex = re.compile("([^\s\"']+|\"([^\"]*)\"|'([^']*)')")
+        self.tokenizing_regex = re.compile(
+            "([^\s\"']+|\"([^\"]*)\"|'([^']*)')")
         self.commands = dict()
         self.dm_allowed_commands = set()
         self.databases = []
@@ -55,7 +57,7 @@ class Shell:
             return response
 
         return output
-        
+
     def format_embed(self, user, response):
         """
         Returns a single embed or list of embeds depending on
@@ -75,7 +77,8 @@ class Shell:
             else:
                 sorted_keys = sorted(response.keys())
                 return [
-                    self.format_embed_unsafe(user, {key: response[key] for key in sorted_keys[x:x+25]})
+                    self.format_embed_unsafe(
+                        user, {key: response[key] for key in sorted_keys[x:x+25]})
                     for x in range(0, len(sorted_keys), 25)
                 ]
         else:

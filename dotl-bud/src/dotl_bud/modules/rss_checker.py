@@ -1,6 +1,5 @@
 from .shell import Shell
 from .variables import VariableCommands
-from doclite import Database
 
 import feedparser
 import asyncio
@@ -25,9 +24,10 @@ class RSSChecker(VariableCommands):
                         tag,
                         pin_message=False,
                         mention_role=None):
-        feed = feedparser.parse(url) 
+        feed = feedparser.parse(url)
         # bluesky returns items in unsorted order, so we need to sort by date manually
-        items = sorted(feed["items"], key=lambda item: item["published_parsed"], reverse=True)
+        items = sorted(
+            feed["items"], key=lambda item: item["published_parsed"], reverse=True)
         item = items[0]  # Most recent
 
         if not self.is_announceable(item):
@@ -56,7 +56,8 @@ class RSSChecker(VariableCommands):
                 channel_obj.guild.get_role(mention_role).mention)
         message = await self.send_simple_message(
             formatted_message, self.client.get_channel(channel))
-        if pin_message: await message.pin()
+        if pin_message:
+            await message.pin()
 
     async def delete_previous_pins(self, channel, cutoff_age):
         """
@@ -71,7 +72,7 @@ class RSSChecker(VariableCommands):
         # Filter so we only unpin messages we sent cutoff_age ago
         # Could compare direct user objects, but I don't trust that...
         my_old_pins = filter(
-            lambda p: (p.created_at + cutoff_age < curtime) and \
+            lambda p: (p.created_at + cutoff_age < curtime) and
             (p.author.id == self.client.user.id),
             pins
         )

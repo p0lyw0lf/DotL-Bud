@@ -5,6 +5,7 @@ from contextlib import suppress
 import logging as log
 from traceback import extract_tb
 
+
 class Scheduler(RSSChecker):
     def __init__(self, client, *args, **kwargs):
         super(Scheduler, self).__init__(client, *args, **kwargs)
@@ -22,7 +23,8 @@ class Scheduler(RSSChecker):
     async def start_task(self, taskid):
         if taskid in self.task_running and not self.task_running[taskid]:
             self.task_running[taskid] = True
-            self.task_list[taskid] = asyncio.ensure_future(self.run_task(taskid))
+            self.task_list[taskid] = asyncio.ensure_future(
+                self.run_task(taskid))
 
     async def stop_task(self, taskid):
         if taskid in self.task_running and self.task_running[taskid]:
