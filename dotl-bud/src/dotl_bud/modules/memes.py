@@ -1,10 +1,10 @@
-from .variables import VariableCommands
-from utils import ent2list, list2ent
-
-from urllib.parse import urlparse
 from random import randint
-import logging as log
+from urllib.parse import urlparse
+
 import discord
+
+from ..utils import ent2list, list2ent
+from .variables import VariableCommands
 
 
 class MemeCommands(VariableCommands):

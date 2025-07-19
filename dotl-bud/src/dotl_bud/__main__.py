@@ -2,15 +2,14 @@ import asyncio
 import datetime
 import logging as log
 import os
-import traceback
 
-from discord import Forbidden, Intents
+from discord import Forbidden, Intents, Message
 from discord.errors import NotFound
 import discord
 
-from command_parser import Parser
-from command_scheduler import Scheduler
-from profanity_filter import ProfanityFilter
+from .command_parser import Parser
+from .command_scheduler import Scheduler
+from .profanity_filter import ProfanityFilter
 
 log.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=log.INFO)
 
@@ -124,11 +123,7 @@ unfiltered_commands = {"filter", "filter_word", "unfilter", "unfilter_word"}
 
 @client.event
 async def on_ready():
-    log.info('------')
-    log.info('Logged in as')
-    log.info(client.user.name)
-    log.info(client.user.id)
-    log.info('------')
+    log.info(f'Logged in as {client.user}')
     # await bot.start_task('dotl_rss')
     # await bot.start_task('meg_rss')
     # await bot.start_task('meg_bsky_rss')
@@ -145,7 +140,7 @@ async def on_ready():
 
 
 @client.event
-async def on_message(message):
+async def on_message(message: Message):
     # REAALY would prefer not to do this b/c people can get
     # around filter using commands that have effects inside them but idk
     try:
@@ -164,15 +159,14 @@ async def on_message(message):
                     embed=bot.format_embed(message.author, filtered[x:x+2048])
                 )
         except (Forbidden, NotFound) as err:
-            log.warn("Did not successfully filter message from {0} ({1})."
+            log.warning("Did not successfully filter message from {0} ({1})."
                      .format(message.author.name, message.author.id))
-            log.warn(str(err))
+            log.warning(str(err))
             pass
-
         return
 
     if discord.utils.find(
-        lambda user: user.id == client.user.id,
+        lambda user: client.user and user.id == client.user.id,
         message.mentions
     ):
         if 'good' in message.content.lower():
@@ -188,10 +182,9 @@ async def on_message(message):
             except (Forbidden, NotFound):
                 pass
 
-        await message.channel.trigger_typing()
+        await message.channel.typing()
 
-        if isinstance(message.channel, discord.abc.PrivateChannel) and \
-           isinstance(response, str):
+        if isinstance(response, str):
             rspmsg = await message.channel.send(response)
         else:
             output = bot.format_embed(message.author, response)

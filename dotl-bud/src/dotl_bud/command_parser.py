@@ -1,17 +1,16 @@
+import asyncio
 import traceback
+
 from discord import Forbidden
 from discord.errors import NotFound
 import discord
-import asyncio
-import sys
 
-from modules.help import HelpCommands
-from modules.dice import DiceCommands
-from modules.misc import MiscCommands
-from modules.permissions import Permissions
-from modules.memes import MemeCommands
-from modules.role_manager import RoleManager
-from utils import safe_int, safe_float
+from .modules.dice import DiceCommands
+from .modules.help import HelpCommands
+from .modules.memes import MemeCommands
+from .modules.misc import MiscCommands
+from .modules.role_manager import RoleManager
+from .utils import safe_int, safe_float
 
 
 class Parser(MiscCommands, HelpCommands, DiceCommands, MemeCommands, RoleManager):

@@ -1,5 +1,4 @@
 import logging as log
-import os
 
 import discord
 from discord import ChannelType

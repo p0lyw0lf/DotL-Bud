@@ -1,7 +1,7 @@
 from discord import ChannelType
 
-from .shell import Shell
 from ..doclite import InMemDatabase
+from .shell import Shell
 
 
 class HelpCommands(Shell):

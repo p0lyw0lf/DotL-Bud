@@ -1,8 +1,6 @@
-from .shell import Shell
 from .variables import VariableCommands
 
 import feedparser
-import asyncio
 import logging as log
 import datetime
 from discord import Forbidden, HTTPException

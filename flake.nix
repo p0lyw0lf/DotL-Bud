@@ -13,25 +13,22 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-        python3 = pkgs.python3.override {
-          packageOverrides = final: prev: {
-            dotl-bud-lib = final.callPackage ./dotl-bud/package-lib.nix { };
-          };
-        };
+        pkgs = nixpkgs.legacyPackages.${system}.extend (
+          final: prev: {
+            python3 = prev.python3.override {
+              packageOverrides = final: prev: {
+                dotl-bud-lib = final.callPackage ./dotl-bud/package-lib.nix { };
+              };
+            };
+          }
+        );
 
-        dotl-bud-bin = pkgs.callPackage ./dotl-bud/package-bin.nix {
-          python3-bot-crossposter-env = python3.withPackages (ps: [
-            ps.dotl-bud-lib
-          ]);
-        };
+        dotl-bud-bin = pkgs.callPackage ./dotl-bud/package-bin.nix { };
       in
       {
         packages = {
-          inherit
-            python3
-            dotl-bud-bin
-            ;
+          inherit dotl-bud-bin;
+          inherit (pkgs) python3;
         };
         devShells.default = pkgs.callPackage ./shell.nix { };
       }

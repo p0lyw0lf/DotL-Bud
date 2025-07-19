@@ -1,9 +1,9 @@
-from modules.rss_checker import RSSChecker
-
 import asyncio
 from contextlib import suppress
 import logging as log
 from traceback import extract_tb
+
+from .modules.rss_checker import RSSChecker
 
 
 class Scheduler(RSSChecker):

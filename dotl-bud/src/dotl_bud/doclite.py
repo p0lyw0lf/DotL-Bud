@@ -4,6 +4,7 @@ import json
 
 DB = Path(os.environ.get("DB_DIRECTORY", "."))
 
+
 class Database(object):
     def __init__(self, filename, global_keyword):
         self.file_dir = str(DB / filename) + '/'

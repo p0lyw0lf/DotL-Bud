@@ -39,11 +39,11 @@ class ProfanityFilter:
         self.reset_filter()
 
     def reset_filter(self):
-        filter_file = open(BAD_WORD_LIST, 'r')
-        replace_file = open(BAD_WORD_REPLACE, 'r')
+        with open(BAD_WORD_LIST, 'r') as filter_file:
+            filter_list = filter_file.read().split("\n")
 
-        filter_list = filter_file.read().split("\n")
-        self.replace_list = replace_file.read().split("\n")
+        with open(BAD_WORD_REPLACE, 'r') as replace_file:
+            self.replace_list = replace_file.read().split("\n")
 
         self.regex_string = "\\b("
 
