@@ -1,11 +1,11 @@
 import datetime
 import logging as log
-from doclite import JsonDatabase
-from .shell import Shell
-from .permissions import Permissions
 
 import discord
 from discord import Forbidden, HTTPException
+
+from ..doclite import JsonDatabase
+from .permissions import Permissions
 
 
 class RoleManager(Permissions):

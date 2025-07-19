@@ -1,4 +1,4 @@
-from doclite import InMemDatabase
+from ..doclite import InMemDatabase
 from .shell import Shell
 
 

@@ -1,12 +1,12 @@
+from pathlib import Path
 import os
-import threading
 import json
-import logging as log
 
+DB = Path(os.environ.get("DB_DIRECTORY", "."))
 
 class Database(object):
     def __init__(self, filename, global_keyword):
-        self.file_dir = str(filename) + '/'
+        self.file_dir = str(DB / filename) + '/'
         self.global_keyword = str(global_keyword)
 
     def __getitem__(self, key):
@@ -101,7 +101,7 @@ class InMemDatabase(Database):
 
 class JsonDatabase(Database):
     def __init__(self, filename):
-        self.filename = filename
+        self.filename = str(DB / filename)
         self._data = dict()
 
         # Load existing data if available
@@ -130,4 +130,4 @@ class JsonDatabase(Database):
 
 
 if __name__ == '__main__':
-    d = Database('.')
+    d = Database('.', 'global')
