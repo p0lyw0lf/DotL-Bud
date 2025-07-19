@@ -1,8 +1,11 @@
-from .shell import Shell
+import logging as log
+import os
 
 import discord
 from discord import ChannelType
-import logging as log
+
+from ..filter import BAD_WORD_LIST
+from .shell import Shell
 
 class MiscCommands(Shell):
     def __init__(self, client, *args, **kwargs):
@@ -56,7 +59,7 @@ class MiscCommands(Shell):
         if word is None: return "You need to specify a word!"
         # What I'm doing here probably isn't good for million-line files,
         # but should be good enough for the small list here
-        filter_file = open("filter/bad_word_list", 'r')
+        filter_file = open(BAD_WORD_LIST, 'r')
 
         filter_list = [x for x in filter_file.read().split("\n") if x]
         filter_file.close()
@@ -64,7 +67,7 @@ class MiscCommands(Shell):
         word = word.lower()
         if word in filter_list: return "That word is already in the list"
 
-        filter_file = open("filter/bad_word_list", 'a')
+        filter_file = open(BAD_WORD_LIST, 'a')
         filter_file.write("\n" + word)
         filter_file.close()
 
@@ -85,7 +88,7 @@ class MiscCommands(Shell):
     async def unfilter_word(self, word=None, *args):
         if word is None: return "You need to specify a word!"
 
-        filter_file = open("filter/bad_word_list", 'r')
+        filter_file = open(BAD_WORD_LIST, 'r')
 
         filter_list = filter_file.read().split("\n")
         filter_file.close()
@@ -93,7 +96,7 @@ class MiscCommands(Shell):
         word = word.lower()
         if word not in filter_list: return "That word is not on the list"
 
-        filter_file = open("filter/bad_word_list", "w")
+        filter_file = open(BAD_WORD_LIST, "w")
 
         for wordi in range(len(filter_list)):
             if filter_list[wordi] and filter_list[wordi] != word:

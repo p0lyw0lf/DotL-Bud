@@ -1,5 +1,7 @@
-import re
 import random
+import re
+
+from .filter import BAD_WORD_LIST, BAD_WORD_REPLACE
 
 class ProfanityFilter:
     letter2regex = {
@@ -35,8 +37,8 @@ class ProfanityFilter:
         self.reset_filter()
 
     def reset_filter(self):
-        filter_file = open("filter/bad_word_list", 'r')
-        replace_file = open("filter/bad_word_replace", 'r')
+        filter_file = open(BAD_WORD_LIST, 'r')
+        replace_file = open(BAD_WORD_REPLACE, 'r')
 
         filter_list = filter_file.read().split("\n")
         self.replace_list = replace_file.read().split("\n")

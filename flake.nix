@@ -33,7 +33,7 @@
             dotl-bud-bin
             ;
         };
-        devShells.default = (import ./shell.nix) { inherit pkgs; };
+        devShells.default = pkgs.callPackage ./shell.nix { };
       }
     );
 }
