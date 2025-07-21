@@ -1,8 +1,9 @@
 from pathlib import Path
 import os
 import json
+import importlib.resources as impresources
 
-DB = Path(os.environ.get("DB_DIRECTORY", "."))
+DB = Path(os.environ.get("DB_DIRECTORY", str(impresources.files(__name__))))
 
 
 class Database(object):

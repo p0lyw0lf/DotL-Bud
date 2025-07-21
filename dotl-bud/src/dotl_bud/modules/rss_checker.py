@@ -63,7 +63,7 @@ class RSSChecker(VariableCommands):
         if you set pin_message=True in check_rss
         """
 
-        curtime = datetime.datetime.utcnow()
+        curtime = datetime.datetime.now(datetime.timezone.utc)
 
         pins = await self.client.get_channel(channel).pins()
 
@@ -79,5 +79,5 @@ class RSSChecker(VariableCommands):
             try:
                 await message.unpin()
             except (Forbidden, HTTPException):
-                log.warn("Could not unpin message {} ({})".format(
+                log.warning("Could not unpin message {} ({})".format(
                     message.id, message.timestamp))

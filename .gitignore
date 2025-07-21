@@ -31,7 +31,7 @@ oauth2.tok
 oauth2.tok.*
 
 # RSS history files
-db/last_link_*
+last_link_*
 
 # direnv
 .direnv/
