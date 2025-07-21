@@ -83,7 +83,7 @@ class MiscCommands(Shell):
     def reset_filter(self):
         # Placeholder for actual method
         super().reset_filter()
-        log.warn("Fake reset called")
+        log.warning("Fake reset called")
         pass
 
     # Useless because commands containing bad words are deleted before

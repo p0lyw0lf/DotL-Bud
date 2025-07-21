@@ -155,9 +155,8 @@ async def on_message(message: Message):
             await message.delete()
             # we don't want to hit the limit
             for x in range(0, len(filtered), 2048):
-                await message.channel.send(
-                    embed=bot.format_embed(message.author, filtered[x:x+2048])
-                )
+                for embed in bot.format_embed(message.author, filtered[x:x+2048]):
+                    await message.channel.send(embed=embed)
         except (Forbidden, NotFound) as err:
             log.warning("Did not successfully filter message from {0} ({1})."
                      .format(message.author.name, message.author.id))

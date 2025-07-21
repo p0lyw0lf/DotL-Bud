@@ -44,11 +44,11 @@ class RoleManager(Permissions):
     async def check_roles(self, serverid, member_timelimit, unmuted_timelimit):
         if self.permdb[str(serverid), 'member_role'] is None or \
                 self.permdb[str(serverid), 'muted_role'] is None:
-            log.warn("You must set the member and role ids on {} before auto-roleing can work!"
+            log.warning("You must set the member and role ids on {} before auto-roleing can work!"
                      .format(serverid))
             return
 
-        curtime = datetime.datetime.utcnow()
+        curtime = datetime.datetime.now(datetime.timezone.utc)
 
         server = self.client.get_guild(serverid)
         if server.large:
@@ -76,7 +76,7 @@ class RoleManager(Permissions):
                     warnings["since"], "%Y-%m-%dT%H:%M:%S.%f")
                 if probation_start + member_timelimit < curtime:
                     # Probation is up, add them back to Bud status
-                    log.warn("removing probation")
+                    log.warning("removing probation")
                     await member.add_roles(member_role)
                     del warnings["since"]
                     warnings["probation"] = False
@@ -95,7 +95,7 @@ class RoleManager(Permissions):
                         await member.add_roles(member_role)
                         log.info("[SUCCESS] Changing role of " +
                                  str(member)+" succeeded")
-                    except (Forbidden, HTTPException) as e:
+                    except (Forbidden, HTTPException):
                         log.info("[FAILURE] Changing role of " +
                                  str(member)+" failed")
 
@@ -211,7 +211,7 @@ class RoleManager(Permissions):
             if warnings["warnings"] == 0:
                 warnings["warnings"] = 1
             warnings["probation"] = True
-            warnings["since"] = datetime.datetime.utcnow().strftime(
+            warnings["since"] = datetime.datetime.now(datetime.timezone.utc).strftime(
                 "%Y-%m-%dT%H:%M:%S.%f")
             self.warnings[member.id] = warnings
 
@@ -253,7 +253,9 @@ class RoleManager(Permissions):
         return "{}#{}".format(member.name, member.discriminator)
 
     def get_warnings(self, userid, createIfNotExist=True):
-        if not self.warnings[userid]:
+        if warnings := self.warnings[userid]:
+            return warnings
+        else:
             # This is the default "warnings" entry
             obj = {
                 "warnings": 0,
@@ -263,8 +265,6 @@ class RoleManager(Permissions):
             if createIfNotExist:
                 self.warnings[userid] = obj
             return obj
-        else:
-            return self.warnings[userid]
 
     def get_server_user(self, server, userid, username, messageIfNone):
         log.debug(str(userid) + " " + str(username))

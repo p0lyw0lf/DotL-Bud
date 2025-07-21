@@ -9,7 +9,7 @@ class Shell:
 
         self.special_begin = 'b!'
         self.tokenizing_regex = re.compile(
-            "([^\s\"']+|\"([^\"]*)\"|'([^']*)')")
+            "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')")
         self.commands = dict()
         self.dm_allowed_commands = set()
         self.databases = []
@@ -40,7 +40,7 @@ class Shell:
                 return thing
         return string
 
-    def format_embed_unsafe(self, user, response):
+    def format_embed_unsafe(self, user, response) -> Embed:
         output = Embed()
         output.color = 0x0da000
         output.set_author(name=user.display_name, icon_url=user.avatar_url)
@@ -58,14 +58,14 @@ class Shell:
 
         return output
 
-    def format_embed(self, user, response):
+    def format_embed(self, user, response) -> list[Embed]:
         """
         Returns a single embed or list of embeds depending on
         if the content will go over the limit or not.
         """
         if isinstance(response, str):
             if len(response) <= 2048:
-                return self.format_embed_unsafe(user, response)
+                return [self.format_embed_unsafe(user, response)]
             else:
                 return [
                     self.format_embed_unsafe(user, response[x:x+2048])
@@ -73,7 +73,7 @@ class Shell:
                 ]
         elif isinstance(response, dict):
             if len(response) <= 25:
-                return self.format_embed_unsafe(user, response)
+                return [self.format_embed_unsafe(user, response)]
             else:
                 sorted_keys = sorted(response.keys())
                 return [

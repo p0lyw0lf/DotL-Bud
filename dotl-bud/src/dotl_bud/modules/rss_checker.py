@@ -31,7 +31,7 @@ class RSSChecker(VariableCommands):
         if not self.is_announceable(item):
             return
 
-        current_link = item["link"].strip()
+        current_link = str(item["link"]).strip()
         dbitem = ("last_link_" + tag, )
         last_link = self.db[dbitem].strip()
         if current_link == last_link:
