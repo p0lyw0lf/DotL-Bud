@@ -38,3 +38,4 @@ last_link_*
 
 # build directories
 dist/
+result
