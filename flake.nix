@@ -24,10 +24,11 @@
         );
 
         dotl-bud-bin = pkgs.callPackage ./dotl-bud/package-bin.nix { };
+        dotl-bud-db = pkgs.callPackage ./dotl-bud/package-db.nix { };
       in
       {
         packages = {
-          inherit dotl-bud-bin;
+          inherit dotl-bud-bin dotl-bud-db;
           inherit (pkgs) python3;
         };
         devShells.default = pkgs.callPackage ./shell.nix { };
