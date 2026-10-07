@@ -22,6 +22,7 @@ class Bot(Parser, Scheduler, ProfanityFilter):
 PAGEUPDATE_ROLE = 636331098733019166
 
 client = discord.Client(
+    loop=asyncio.new_event_loop(),
     intents=Intents(
         guilds=True,
         members=True,
@@ -37,7 +38,7 @@ bot = Bot(client)
 bot.schedule_periodic(
     bot.check_rss,
     (
-        "http://www.daughterofthelilies.com/rss.php",
+        "http://www.daughterofthelilies.com/comic/rss",
         371963209508192276,
         "Hey everyone %mention%! A new page just went up: %page%. Enjoy :3",
         "dotl"
