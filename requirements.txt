@@ -1,2 +1,4 @@
 discord.py >= 1.0, < 2.0
 feedparser
+legacy-cgi
+audioop-lts
